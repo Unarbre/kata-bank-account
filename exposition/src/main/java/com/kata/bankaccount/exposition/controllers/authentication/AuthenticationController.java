@@ -1,7 +1,7 @@
 package com.kata.bankaccount.exposition.controllers.authentication;
 
 
-import com.kata.bankaccount.application.usecases.authentication.query.RegisterUser;
+import com.kata.bankaccount.common.events.RegisterUser;
 import io.jkratz.mediator.core.Mediator;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

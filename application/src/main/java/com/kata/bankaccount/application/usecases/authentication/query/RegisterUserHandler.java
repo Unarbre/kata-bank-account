@@ -1,5 +1,6 @@
 package com.kata.bankaccount.application.usecases.authentication.query;
 
+import com.kata.bankaccount.common.events.RegisterUser;
 import com.kata.bankaccount.domain.user.IUsers;
 import io.jkratz.mediator.core.RequestHandler;
 import lombok.AllArgsConstructor;

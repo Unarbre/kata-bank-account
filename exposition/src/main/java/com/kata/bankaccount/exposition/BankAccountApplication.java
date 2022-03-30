@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan({"com.kata.bankaccount.exposition, com.kata.bankaccount.application, com.kata.bankaccount.infrastructure"})
+@ComponentScan({"com.kata.bankaccount.exposition," +
+                " com.kata.bankaccount.application," +
+                " com.kata.bankaccount.infrastructure," +
+                " com.kata.bankaccount.commons"})
 public class BankAccountApplication {
 
     private final ApplicationContext applicationContext;
