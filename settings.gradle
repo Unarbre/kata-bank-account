@@ -1,0 +1,6 @@
+rootProject.name = 'bank-account'
+include 'domain'
+include 'application'
+include 'exposition'
+include 'infrastructure'
+
