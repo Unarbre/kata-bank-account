@@ -7,6 +7,12 @@ import com.kata.bankaccount.domain.account.WriteAccount;
 import java.util.List;
 
 public class Accounts implements IAccounts {
+
+    @Override
+    public String getNextId() {
+        return null;
+    }
+
     @Override
     public ReadAccount get(String s) {
         return null;

@@ -1,6 +1,8 @@
 package com.kata.bankaccount.domain.account;
 
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
+import com.kata.bankaccount.domain.account.exceptions.NegativeWithdrawException;
+import com.kata.bankaccount.domain.account.exceptions.OverdraftExceededException;
 import com.kata.bankaccount.domain.account.utils.AccountIdMocker;
 import org.junit.jupiter.api.Test;
 
@@ -108,7 +110,7 @@ public class AccountTest {
                 .build();
 
 
-        account.withdraw(400);
+        account.withdraw(new BigDecimal(400));
 
         assertEquals(new BigDecimal(100), account.getBalance().value());
     }
@@ -125,7 +127,7 @@ public class AccountTest {
 
         NegativeWithdrawException exception = assertThrows(
                 NegativeWithdrawException.class, () ->
-                        account.withdraw(-400)
+                        account.withdraw(new BigDecimal(-400))
         );
 
         assertEquals("-400: Negative withdraws are not allowed", exception.getMessage());
@@ -143,7 +145,7 @@ public class AccountTest {
 
         OverdraftExceededException exception = assertThrows(
                 OverdraftExceededException.class, () ->
-                        account.withdraw(300)
+                        account.withdraw(new BigDecimal(300))
         );
 
         assertEquals("Withdraw 300 impossible. " +
