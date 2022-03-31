@@ -2,8 +2,9 @@ package com.kata.bankaccount.common.events;
 
 import io.jkratz.mediator.core.Request;
 
+import java.math.BigDecimal;
 
 
-public record CreateAccount(int initialBalance, int initialOverdraft) implements Request<String> {
+public record CreateAccount(BigDecimal initialBalance, BigDecimal initialOverdraft, BigDecimal limit) implements Request<String> {
 
 }

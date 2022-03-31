@@ -29,7 +29,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
     @Override
     public WriteAccount to() {
-        return null;
+        return new WriteAccount(this.id.value(), this.balance.value(), this.limit.value(), this.overdraft.value());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
     }
 
 
-    static class AccountCreateBuilder {
+    public static class AccountCreateBuilder {
         private Balance balance;
         private Overdraft overdraft;
         private Limit limit;
@@ -73,18 +73,18 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
             return this;
         }
 
-        public AccountCreateBuilder balance(Balance balance) {
-            this.balance = balance;
+        public AccountCreateBuilder initialBalance(BigDecimal balance) {
+            this.balance = new Balance(balance);
             return this;
         }
 
-        public AccountCreateBuilder overdraft(Overdraft overdraft) {
-            this.overdraft = overdraft;
+        public AccountCreateBuilder initialOverdraft(BigDecimal overdraft) {
+            this.overdraft = new Overdraft(overdraft);
             return this;
         }
 
-        public AccountCreateBuilder limit(Limit limit) {
-            this.limit = limit;
+        public AccountCreateBuilder initialLimit(BigDecimal limit) {
+            this.limit = new Limit(limit);
             return this;
         }
 

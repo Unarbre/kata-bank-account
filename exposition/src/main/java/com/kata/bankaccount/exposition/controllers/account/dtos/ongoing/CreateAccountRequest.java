@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class CreateAccountRequest {
-    private final Integer initialBalance;
-    private final Integer initialOverdraft;
+    private final String initialBalance;
+    private final String initialOverdraft;
+    private final String initialLimit;
 }

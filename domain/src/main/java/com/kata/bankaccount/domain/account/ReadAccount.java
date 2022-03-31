@@ -2,7 +2,13 @@ package com.kata.bankaccount.domain.account;
 
 import com.kata.bankaccount.domain.structures.IReadPort;
 
-public class ReadAccount implements IReadPort {
+import java.math.BigDecimal;
+
+public record ReadAccount(String accountId,
+                          BigDecimal balance,
+                          BigDecimal limit,
+                          BigDecimal overdraft
+                          ) implements IReadPort {
 }
 
 

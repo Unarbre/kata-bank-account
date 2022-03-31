@@ -2,7 +2,6 @@ package com.kata.bankaccount.domain.account;
 
 import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
-import com.kata.bankaccount.domain.account.exceptions.NegativeWithdrawException;
 import com.kata.bankaccount.domain.account.utils.AccountIdMocker;
 import com.kata.bankaccount.domain.structures.MissingPropertyException;
 import org.junit.jupiter.api.Test;
@@ -19,9 +18,9 @@ public class AccountTest {
     public void should_create_new_account() {
         var account = Account.createBuilder()
                 .id(AccountIdMocker.getValidId())
-                .balance(new Balance(new BigDecimal(500)))
-                .overdraft(new Overdraft(new BigDecimal(2000)))
-                .limit(new Limit(new BigDecimal(150000)))
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
                 .build();
 
         assertEquals(account.getBalance(), new Balance(new BigDecimal(500)));
@@ -35,8 +34,8 @@ public class AccountTest {
                 BalanceUnderOverdraftException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
-                                .balance(new Balance(new BigDecimal(-600)))
-                                .overdraft(new Overdraft(new BigDecimal(500)))
+                                .initialBalance(new BigDecimal(-600))
+                                .initialOverdraft(new BigDecimal(500))
                                 .build()
         );
 
@@ -49,9 +48,9 @@ public class AccountTest {
                 BalanceOverLimitException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
-                                .balance(new Balance(new BigDecimal(9000)))
-                                .overdraft(new Overdraft(new BigDecimal(500)))
-                                .limit(new Limit(new BigDecimal(8000)))
+                                .initialBalance(new BigDecimal(9000))
+                                .initialOverdraft(new BigDecimal(500))
+                                .initialLimit(new BigDecimal(8000))
                                 .build()
         );
 
@@ -64,9 +63,9 @@ public class AccountTest {
         MissingPropertyException exception = assertThrows(
                 MissingPropertyException.class, () ->
                         Account.createBuilder()
-                                .balance(new Balance(new BigDecimal(-600)))
-                                .overdraft(new Overdraft(new BigDecimal(500)))
-                                .limit(new Limit(new BigDecimal(800)))
+                                .initialBalance(new BigDecimal(-600))
+                                .initialOverdraft(new BigDecimal(500))
+                                .initialLimit(new BigDecimal(800))
                                 .build()
         );
 
@@ -79,8 +78,8 @@ public class AccountTest {
                 MissingPropertyException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
-                                .limit(new Limit(new BigDecimal(800)))
-                                .overdraft(new Overdraft(new BigDecimal(500)))
+                                .initialLimit(new BigDecimal(800))
+                                .initialOverdraft(new BigDecimal(500))
                                 .build()
         );
 
@@ -93,8 +92,8 @@ public class AccountTest {
                 MissingPropertyException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
-                                .balance(new Balance(new BigDecimal(-600)))
-                                .limit(new Limit(new BigDecimal(800)))
+                                .initialBalance(new BigDecimal(-600))
+                                .initialLimit(new BigDecimal(800))
                                 .build()
         );
 
@@ -105,9 +104,9 @@ public class AccountTest {
     public void withdraw_should_reduce_balance() {
         var account = Account.createBuilder()
                 .id(AccountIdMocker.getValidId())
-                .balance(new Balance(new BigDecimal(500)))
-                .overdraft(new Overdraft(new BigDecimal(2000)))
-                .limit(new Limit(new BigDecimal(150000)))
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
                 .build();
 
 
@@ -120,9 +119,9 @@ public class AccountTest {
     public void withdraw_should_throw_an_error_on_overdraft_exceed() {
         var account = Account.createBuilder()
                 .id(AccountIdMocker.getValidId())
-                .balance(new Balance(new BigDecimal(-1800)))
-                .overdraft(new Overdraft(new BigDecimal(2000)))
-                .limit(new Limit(new BigDecimal(150000)))
+                .initialBalance(new BigDecimal(-1800))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
                 .build();
 
 
