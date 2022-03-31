@@ -1,5 +1,6 @@
 package com.kata.bankaccount.domain.account;
 
+import com.kata.bankaccount.domain.account.exceptions.NegativeWithdrawException;
 import com.kata.bankaccount.domain.structures.IValueObject;
 
 import java.math.BigDecimal;
@@ -22,6 +23,8 @@ public record Balance(BigDecimal value) implements IValueObject {
     }
 
     public Balance subtract(BigDecimal withdrewAmount) {
+        if (withdrewAmount.compareTo(BigDecimal.ZERO) < 0)
+            throw new NegativeWithdrawException(withdrewAmount + " : Negative withdraws are not allowed");
         return new Balance(this.value.subtract(withdrewAmount));
     }
 }

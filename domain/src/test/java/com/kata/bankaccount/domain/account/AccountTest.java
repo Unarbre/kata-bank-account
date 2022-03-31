@@ -1,9 +1,10 @@
 package com.kata.bankaccount.domain.account;
 
+import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
 import com.kata.bankaccount.domain.account.exceptions.NegativeWithdrawException;
-import com.kata.bankaccount.domain.account.exceptions.OverdraftExceededException;
 import com.kata.bankaccount.domain.account.utils.AccountIdMocker;
+import com.kata.bankaccount.domain.structures.MissingPropertyException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -44,8 +45,8 @@ public class AccountTest {
 
     @Test
     public void balance_should_not_exceed_account_limit() {
-        BalanceUnderOverdraftException exception = assertThrows(
-                BalanceUnderOverdraftException.class, () ->
+        BalanceOverLimitException exception = assertThrows(
+                BalanceOverLimitException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
                                 .balance(new Balance(new BigDecimal(9000)))
@@ -60,8 +61,8 @@ public class AccountTest {
 
     @Test
     public void should_throw_error_on_create_with_no_id() {
-        BalanceUnderOverdraftException exception = assertThrows(
-                BalanceUnderOverdraftException.class, () ->
+        MissingPropertyException exception = assertThrows(
+                MissingPropertyException.class, () ->
                         Account.createBuilder()
                                 .balance(new Balance(new BigDecimal(-600)))
                                 .overdraft(new Overdraft(new BigDecimal(500)))
@@ -74,8 +75,8 @@ public class AccountTest {
 
     @Test
     public void should_throw_error_on_create_with_no_balance() {
-        BalanceUnderOverdraftException exception = assertThrows(
-                BalanceUnderOverdraftException.class, () ->
+        MissingPropertyException exception = assertThrows(
+                MissingPropertyException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
                                 .limit(new Limit(new BigDecimal(800)))
@@ -88,8 +89,8 @@ public class AccountTest {
 
     @Test
     public void should_throw_error_on_create_with_no_overdraft() {
-        BalanceUnderOverdraftException exception = assertThrows(
-                BalanceUnderOverdraftException.class, () ->
+        MissingPropertyException exception = assertThrows(
+                MissingPropertyException.class, () ->
                         Account.createBuilder()
                                 .id(AccountIdMocker.getValidId())
                                 .balance(new Balance(new BigDecimal(-600)))
@@ -97,7 +98,7 @@ public class AccountTest {
                                 .build()
         );
 
-        assertEquals("Cannot create Account without an overdraft.", exception.getMessage());
+        assertEquals("Cannot create Account without an overdraft", exception.getMessage());
     }
 
     @Test
@@ -116,24 +117,6 @@ public class AccountTest {
     }
 
     @Test
-    public void withdraw_should_throw_an_error_on_negative_withdraw() {
-        var account = Account.createBuilder()
-                .id(AccountIdMocker.getValidId())
-                .balance(new Balance(new BigDecimal(500)))
-                .overdraft(new Overdraft(new BigDecimal(2000)))
-                .limit(new Limit(new BigDecimal(150000)))
-                .build();
-
-
-        NegativeWithdrawException exception = assertThrows(
-                NegativeWithdrawException.class, () ->
-                        account.withdraw(new BigDecimal(-400))
-        );
-
-        assertEquals("-400: Negative withdraws are not allowed", exception.getMessage());
-    }
-
-    @Test
     public void withdraw_should_throw_an_error_on_overdraft_exceed() {
         var account = Account.createBuilder()
                 .id(AccountIdMocker.getValidId())
@@ -143,13 +126,11 @@ public class AccountTest {
                 .build();
 
 
-        OverdraftExceededException exception = assertThrows(
-                OverdraftExceededException.class, () ->
+        BalanceUnderOverdraftException exception = assertThrows(
+                BalanceUnderOverdraftException.class, () ->
                         account.withdraw(new BigDecimal(300))
         );
 
-        assertEquals("Withdraw 300 impossible. " +
-                "Previous Balance : -1800. " +
-                "Actual allowed overdraft: 2000.", exception.getMessage());
+        assertEquals("-2100 balance is under 2000 overdraft limit.", exception.getMessage());
     }
 }

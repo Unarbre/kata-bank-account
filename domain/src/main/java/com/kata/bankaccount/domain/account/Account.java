@@ -1,7 +1,9 @@
 package com.kata.bankaccount.domain.account;
 
+import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
 import com.kata.bankaccount.domain.structures.IAggregate;
+import com.kata.bankaccount.domain.structures.MissingPropertyException;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -88,6 +90,10 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
 
         public Account build() {
+            if (this.id == null) throw new MissingPropertyException("Cannot create Account without an id");
+            if (this.balance == null) throw new MissingPropertyException("Cannot create Account without an initial Balance");
+            if (this.overdraft == null) throw new MissingPropertyException("Cannot create Account without an overdraft");
+
             var account = new Account(id, balance, overdraft, limit);
             account.applyInvariants();
 
@@ -104,10 +110,19 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         if (isBalanceUnderOverdraftLimit())
             throw new BalanceUnderOverdraftException(this.balance.value() + " balance is under "
                     + this.overdraft.value() + " overdraft limit.");
+
+        if (isBalanceOverLimit()) {
+            throw new BalanceOverLimitException(this.balance.value() + " balance is over "
+                    + this.limit.value() + " account limit.");
+        }
     }
 
     boolean isBalanceUnderOverdraftLimit() {
         return this.balance.value().compareTo(this.overdraft.value().negate()) < 0;
+    }
+
+    boolean isBalanceOverLimit() {
+        return this.balance.value().compareTo(this.limit.value()) > 0;
     }
 
 
