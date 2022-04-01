@@ -1,4 +1,4 @@
-package com.kata.bankaccount.application.usecases.account.aop;
+package com.kata.bankaccount.application.usecases.aop;
 
 
 import com.kata.bankaccount.domain.structures.IWritePort;
@@ -12,14 +12,13 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @AllArgsConstructor
-class DomainRepositoryActionHandler {
+class WriteDomainRepositoryActionHandler {
 
     private final Mediator mediator;
 
     @After(value = "execution(* com.kata.bankaccount.domain.structures.IWriteAggregates.save(..)) && args(writePort, ..)")
     private void handleAggregatesModification(IWritePort writePort) {
         for (var event : writePort.getEvents()) {
-            System.out.println(event);
             this.mediator.emit(event);
         }
     }

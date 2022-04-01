@@ -1,8 +1,8 @@
 package com.kata.bankaccount.exposition.controllers.account;
 
 
-import com.kata.bankaccount.common.events.CreateAccount;
-import com.kata.bankaccount.common.events.GetAccount;
+import com.kata.bankaccount.common.commands.CreateAccount;
+import com.kata.bankaccount.common.queries.GetAccount;
 import com.kata.bankaccount.exposition.controllers.account.dtos.ongoing.CreateAccountRequest;
 import io.jkratz.mediator.core.Mediator;
 import lombok.AllArgsConstructor;

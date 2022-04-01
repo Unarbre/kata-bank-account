@@ -44,6 +44,7 @@ public class Accounts implements IAccounts {
     @Override
     public void save(WriteAccount aggregate) {
         this.accountEntityRepository.save(this.writeAccountMapper.map(aggregate));
+        System.out.println(this.accountEntityRepository.getAll());
     }
 
     @Override

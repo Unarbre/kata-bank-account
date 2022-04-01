@@ -1,11 +1,14 @@
 package com.kata.bankaccount.domain.account;
 
+import com.kata.bankaccount.common.events.AccountCreated;
+import com.kata.bankaccount.common.structures.DomainEvent;
 import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
 import com.kata.bankaccount.domain.structures.IAggregate;
 import com.kata.bankaccount.domain.structures.MissingPropertyException;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount> {
@@ -14,12 +17,14 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
     private Balance balance;
     private final Overdraft overdraft;
     private final Limit limit;
+    private final List<DomainEvent> events;
 
-    private Account(AccountId id, Balance balance, Overdraft overdraft, Limit limit) {
+    private Account(AccountId id, Balance balance, Overdraft overdraft, Limit limit, List<DomainEvent> events) {
         this.id = id;
         this.balance = balance;
         this.overdraft = overdraft;
         this.limit = limit;
+        this.events = events;
     }
 
     @Override
@@ -29,7 +34,12 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
     @Override
     public WriteAccount to() {
-        return new WriteAccount(this.id.value(), this.balance.value(), this.limit.value(), this.overdraft.value());
+        return new WriteAccount(this.id.value(), this.balance.value(), this.limit.value(), this.overdraft.value(), this.getEvents());
+    }
+
+    @Override
+    public List<DomainEvent> getEvents() {
+        return this.events;
     }
 
     @Override
@@ -94,7 +104,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
             if (this.balance == null) throw new MissingPropertyException("Cannot create Account without an initial Balance");
             if (this.overdraft == null) throw new MissingPropertyException("Cannot create Account without an overdraft");
 
-            var account = new Account(id, balance, overdraft, limit);
+            var account = new Account(id, balance, overdraft, limit, List.of(new AccountCreated(id.value())));
             account.applyInvariants();
 
             return account;

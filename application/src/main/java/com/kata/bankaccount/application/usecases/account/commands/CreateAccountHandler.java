@@ -1,6 +1,6 @@
 package com.kata.bankaccount.application.usecases.account.commands;
 
-import com.kata.bankaccount.common.events.CreateAccount;
+import com.kata.bankaccount.common.commands.CreateAccount;
 import com.kata.bankaccount.domain.account.Account;
 import com.kata.bankaccount.domain.account.AccountId;
 import com.kata.bankaccount.domain.account.IAccounts;
@@ -28,7 +28,6 @@ public class CreateAccountHandler implements RequestHandler<CreateAccount, Strin
                 .build();
 
         accounts.save(account.to());
-
         return id;
     }
 }

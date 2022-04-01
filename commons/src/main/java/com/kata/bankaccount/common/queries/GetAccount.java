@@ -1,4 +1,4 @@
-package com.kata.bankaccount.common.events;
+package com.kata.bankaccount.common.queries;
 
 import io.jkratz.mediator.core.Request;
 

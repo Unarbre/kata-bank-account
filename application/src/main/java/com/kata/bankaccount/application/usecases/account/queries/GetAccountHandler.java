@@ -1,6 +1,6 @@
-package com.kata.bankaccount.application.usecases.account.commands;
+package com.kata.bankaccount.application.usecases.account.queries;
 
-import com.kata.bankaccount.common.events.GetAccount;
+import com.kata.bankaccount.common.queries.GetAccount;
 import com.kata.bankaccount.domain.account.IAccounts;
 import io.jkratz.mediator.core.RequestHandler;
 import lombok.AllArgsConstructor;

@@ -16,6 +16,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.jkratz.springmediatr:spring-mediatr:1.1-RELEASE'
+    implementation 'org.springframework:spring-aspects:5.3.17'
 
     implementation project(':application')
     implementation project(':domain')
