@@ -8,8 +8,6 @@ public interface IAggregate<Id extends IObjectId, Write extends IWritePort, Read
 
     Id getId();
 
-    IAggregate<?, ?, ?> from(Read source);
-
     Write to();
 
     List<DomainEvent> getEvents();

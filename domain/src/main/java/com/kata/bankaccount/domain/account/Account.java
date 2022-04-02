@@ -1,6 +1,7 @@
 package com.kata.bankaccount.domain.account;
 
 import com.kata.bankaccount.common.events.AccountCreated;
+import com.kata.bankaccount.common.events.WithdrawProceeded;
 import com.kata.bankaccount.common.structures.DomainEvent;
 import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
@@ -8,6 +9,7 @@ import com.kata.bankaccount.domain.structures.IAggregate;
 import com.kata.bankaccount.domain.structures.MissingPropertyException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,9 +19,9 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
     private Balance balance;
     private final Overdraft overdraft;
     private final Limit limit;
-    private final List<DomainEvent> events;
+    private final ArrayList<DomainEvent> events;
 
-    private Account(AccountId id, Balance balance, Overdraft overdraft, Limit limit, List<DomainEvent> events) {
+    private Account(AccountId id, Balance balance, Overdraft overdraft, Limit limit, ArrayList<DomainEvent> events) {
         this.id = id;
         this.balance = balance;
         this.overdraft = overdraft;
@@ -27,9 +29,13 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         this.events = events;
     }
 
-    @Override
-    public Account from(ReadAccount source) {
-        return null;
+    public static Account from(ReadAccount source) {
+        return new Account(
+                new AccountId(source.accountId()),
+                new Balance(source.balance()),
+                new Overdraft(source.overdraft()),
+                new Limit(source.limit()),
+                new ArrayList<>());
     }
 
     @Override
@@ -63,6 +69,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         this.balance = this.balance.subtract(withdrewAmount);
 
         this.applyInvariants();
+        this.events.add(new WithdrawProceeded(this.id.value(), withdrewAmount, balance.value()));
     }
 
     public static AccountCreateBuilder createBuilder() {
@@ -76,7 +83,8 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         private Limit limit;
         private AccountId id;
 
-        public AccountCreateBuilder() {}
+        public AccountCreateBuilder() {
+        }
 
         public AccountCreateBuilder id(AccountId id) {
             this.id = id;
@@ -101,12 +109,21 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
         public Account build() {
             if (this.id == null) throw new MissingPropertyException("Cannot create Account without an id");
-            if (this.balance == null) throw new MissingPropertyException("Cannot create Account without an initial Balance");
-            if (this.overdraft == null) throw new MissingPropertyException("Cannot create Account without an overdraft");
+            if (this.balance == null)
+                throw new MissingPropertyException("Cannot create Account without an initial Balance");
+            if (this.overdraft == null)
+                throw new MissingPropertyException("Cannot create Account without an overdraft");
 
-            var account = new Account(id, balance, overdraft, limit, List.of(new AccountCreated(id.value())));
+            var account = new Account(
+                    id,
+                    balance,
+                    overdraft,
+                    limit,
+                    new ArrayList<>());
+
+            account.events.add(new AccountCreated(id.value()));
+
             account.applyInvariants();
-
             return account;
         }
     }

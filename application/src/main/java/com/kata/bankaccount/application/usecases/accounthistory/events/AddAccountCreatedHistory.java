@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class AccountCreatedHandler implements EventHandler<AccountCreated> {
+public class AddAccountCreatedHistory implements EventHandler<AccountCreated> {
     @Override
     public void handle(@NonNull AccountCreated accountCreated) {
 
