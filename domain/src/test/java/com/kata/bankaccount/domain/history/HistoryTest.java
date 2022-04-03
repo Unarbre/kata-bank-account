@@ -43,4 +43,18 @@ public class HistoryTest {
 
         assertEquals("History require an history type to be created", exception.getMessage());
     }
+
+    @Test
+    void should_throw_error_on_empty_id() {
+        MissingPropertyException exception = Assertions.assertThrowsExactly(MissingPropertyException.class,
+                () -> History.create()
+                        .newBalance(new BigDecimal(1000))
+                        .previousBalance(new BigDecimal(1000))
+                        .date(LocalDate.now())
+                        .type(WITHDRAW)
+                        .build()
+        );
+
+        assertEquals("History require an id to be created", exception.getMessage());
+    }
 }
