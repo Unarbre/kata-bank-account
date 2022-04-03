@@ -1,10 +1,12 @@
 package com.kata.bankaccount.domain.history;
 
+import com.kata.bankaccount.domain.structures.MissingPropertyException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static com.kata.bankaccount.domain.history.HistoryType.WITHDRAW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,5 +28,19 @@ public class HistoryTest {
         assertEquals(new BigDecimal(300), history.getNewBalance().value());
         assertEquals(now, history.getDate().value());
         assertEquals(WITHDRAW, history.getType());
+    }
+
+    @Test
+    void should_throw_error_on_empty_type() {
+        MissingPropertyException exception = Assertions.assertThrowsExactly(MissingPropertyException.class,
+                () -> History.create()
+                        .newBalance(new BigDecimal(1000))
+                        .previousBalance(new BigDecimal(1000))
+                        .date(LocalDate.now())
+                        .id(new HistoryId(UUID.randomUUID().toString()))
+                        .build()
+                );
+
+        assertEquals("History require an history type to be created", exception.getMessage());
     }
 }

@@ -2,6 +2,7 @@ package com.kata.bankaccount.domain.history;
 
 import com.kata.bankaccount.common.structures.DomainEvent;
 import com.kata.bankaccount.domain.structures.IAggregate;
+import com.kata.bankaccount.domain.structures.MissingPropertyException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -95,6 +96,7 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
         }
 
         public History build() {
+            if (Objects.isNull(type)) throw new MissingPropertyException("History require an history type to be created");
             return new History(id, newBalance, previousBalance, type, date);
         }
 
