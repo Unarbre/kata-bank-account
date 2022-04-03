@@ -57,4 +57,18 @@ public class HistoryTest {
 
         assertEquals("History require an id to be created", exception.getMessage());
     }
+
+    @Test
+    void should_throw_error_on_empty_new_balance() {
+        MissingPropertyException exception = Assertions.assertThrowsExactly(MissingPropertyException.class,
+                () -> History.create()
+                        .id(new HistoryId(UUID.randomUUID().toString()))
+                        .previousBalance(new BigDecimal(1000))
+                        .date(LocalDate.now())
+                        .type(WITHDRAW)
+                        .build()
+        );
+
+        assertEquals("History require a new balance to be created", exception.getMessage());
+    }
 }
