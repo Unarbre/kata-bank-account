@@ -97,6 +97,7 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
 
         public History build() {
             if (Objects.isNull(type)) throw new MissingPropertyException("History require an history type to be created");
+            if (Objects.isNull(id)) throw new MissingPropertyException("History require an id to be created");
             return new History(id, newBalance, previousBalance, type, date);
         }
 
