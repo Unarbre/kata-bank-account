@@ -24,7 +24,7 @@ public class HistoryTest {
 
         assertEquals(new BigDecimal(500), history.getPreviousBalance().value());
         assertEquals(new BigDecimal(300), history.getNewBalance().value());
-        assertEquals(now, history.getHistoryDate().value());
+        assertEquals(now, history.getDate().value());
         assertEquals(WITHDRAW, history.getType());
     }
 }

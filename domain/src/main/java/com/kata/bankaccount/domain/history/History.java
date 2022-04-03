@@ -26,7 +26,7 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
 
     @Override
     public HistoryId getId() {
-        return null;
+        return this.id;
     }
 
     @Override
@@ -39,13 +39,74 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
         return null;
     }
 
+    public Balance getNewBalance() {
+        return newBalance;
+    }
+
+    public Balance getPreviousBalance() {
+        return previousBalance;
+    }
+
+    public HistoryDate getDate() {
+        return date;
+    }
+
+    public HistoryType getType() {
+        return type;
+    }
+
+    public static CreateBuilder create() {
+        return new CreateBuilder();
+    }
+
+    static class CreateBuilder {
+        private HistoryId id;
+        private Balance newBalance;
+        private Balance previousBalance;
+        private HistoryType type;
+        private HistoryDate date;
+
+        public CreateBuilder() {
+        }
+
+        public CreateBuilder id(HistoryId id) {
+            this.id = id;
+            return this;
+        }
+
+        public CreateBuilder newBalance(BigDecimal newBalance) {
+            this.newBalance = new Balance(newBalance);
+            return this;
+        }
+
+        public CreateBuilder previousBalance(BigDecimal previousBalance) {
+            this.previousBalance = new Balance(previousBalance);
+            return this;
+        }
+
+        public CreateBuilder type(HistoryType type) {
+            this.type = type;
+            return this;
+        }
+
+        public CreateBuilder date(LocalDate date) {
+            this.date = new HistoryDate(date);
+            return this;
+        }
+
+        public History build() {
+            return new History(id, newBalance, previousBalance, type, date);
+        }
+
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         History history = (History) o;
-        return Objects.equals(id, history.id) && Objects.equals(newBalance, history.newBalance) && Objects.equals(previousBalance, history.previousBalance) && Objects.equals(historyDate, history.historyDate);
+        return Objects.equals(id, history.id) &&
+                Objects.equals(newBalance, history.newBalance) && Objects.equals(previousBalance, history.previousBalance) && Objects.equals(date, history.date);
     }
 
     @Override
