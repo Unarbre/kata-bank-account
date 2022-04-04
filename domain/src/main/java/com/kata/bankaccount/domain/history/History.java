@@ -96,9 +96,10 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
         }
 
         public History build() {
-            if (Objects.isNull(type)) throw new MissingPropertyException("History require an history type to be created");
-            if (Objects.isNull(id)) throw new MissingPropertyException("History require an id to be created");
-            if (Objects.isNull(newBalance)) throw new MissingPropertyException("History require a new balance to be created");
+            if (Objects.isNull(type)) throw new MissingPropertyException("History requires an history type to be created");
+            if (Objects.isNull(id)) throw new MissingPropertyException("History requires an id to be created");
+            if (Objects.isNull(newBalance)) throw new MissingPropertyException("History whose type is not deletion requires a new balance to be created");
+            if (Objects.isNull(previousBalance)) throw new MissingPropertyException("History whose type is not creation requires a previous balance to be created");
             return new History(id, newBalance, previousBalance, type, date);
         }
 
