@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import static com.kata.bankaccount.domain.history.HistoryType.CREATION;
+import static com.kata.bankaccount.domain.history.HistoryType.DELETION;
+
 public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory> {
 
     private final HistoryId id;
@@ -98,8 +101,8 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
         public History build() {
             if (Objects.isNull(type)) throw new MissingPropertyException("History requires an history type to be created");
             if (Objects.isNull(id)) throw new MissingPropertyException("History requires an id to be created");
-            if (Objects.isNull(newBalance)) throw new MissingPropertyException("History whose type is not deletion requires a new balance to be created");
-            if (Objects.isNull(previousBalance)) throw new MissingPropertyException("History whose type is not creation requires a previous balance to be created");
+            if (Objects.isNull(newBalance) && type != DELETION) throw new MissingPropertyException("History whose type is not deletion requires a new balance to be created");
+            if (Objects.isNull(previousBalance) && type != CREATION) throw new MissingPropertyException("History whose type is not creation requires a previous balance to be created");
             return new History(id, newBalance, previousBalance, type, date);
         }
 
