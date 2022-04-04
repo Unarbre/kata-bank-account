@@ -1,4 +1,4 @@
-package com.kata.bankaccount.application.usecases.aop;
+package com.kata.bankaccount.application.aop;
 
 
 import com.kata.bankaccount.domain.structures.IWritePort;

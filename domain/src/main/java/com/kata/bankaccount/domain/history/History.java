@@ -15,13 +15,15 @@ import static com.kata.bankaccount.domain.history.HistoryType.DELETION;
 public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory> {
 
     private final HistoryId id;
+    private final AccountId accountId;
     private final Balance newBalance;
     private final Balance previousBalance;
     private final HistoryType type;
     private final HistoryDate date;
 
-    private History(HistoryId id, Balance newBalance, Balance previousBalance, HistoryType type, HistoryDate date) {
+    private History(HistoryId id, AccountId accountId, Balance newBalance, Balance previousBalance, HistoryType type, HistoryDate date) {
         this.id = id;
+        this.accountId = accountId;
         this.newBalance = newBalance;
         this.previousBalance = previousBalance;
         this.type = type;
@@ -35,12 +37,20 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
 
     @Override
     public WriteHistory to() {
-        return null;
+        return new WriteHistory(
+                id.value(),
+                accountId.value(),
+                Objects.isNull(newBalance) ? null : newBalance.value(),
+                Objects.isNull(previousBalance) ? null : previousBalance.value(),
+                type,
+                date.value(),
+                getEvents()
+        );
     }
 
     @Override
     public List<DomainEvent> getEvents() {
-        return null;
+        return List.of();
     }
 
     public Balance getNewBalance() {
@@ -63,8 +73,9 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
         return new CreateBuilder();
     }
 
-    static class CreateBuilder {
+    public static class CreateBuilder {
         private HistoryId id;
+        private AccountId accountId;
         private Balance newBalance;
         private Balance previousBalance;
         private HistoryType type;
@@ -75,6 +86,11 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
 
         public CreateBuilder id(HistoryId id) {
             this.id = id;
+            return this;
+        }
+
+        public CreateBuilder accountId(AccountId accountId) {
+            this.accountId = accountId;
             return this;
         }
 
@@ -102,6 +118,9 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
             if (Objects.isNull(type)) {
                 throw new MissingPropertyException("History requires an history type to be created");
             }
+            if (Objects.isNull(accountId)) {
+                throw new MissingPropertyException("History requires an account id to be created");
+            }
             if (Objects.isNull(id)) {
                 throw new MissingPropertyException("History requires an id to be created");
             }
@@ -113,7 +132,7 @@ public class History implements IAggregate<HistoryId, WriteHistory, ReadHistory>
             }
 
 
-            return new History(id, newBalance, previousBalance, type, date);
+            return new History(id, accountId, newBalance, previousBalance, type, date);
         }
 
     }

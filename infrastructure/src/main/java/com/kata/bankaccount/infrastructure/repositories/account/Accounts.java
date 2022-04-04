@@ -4,7 +4,7 @@ import com.kata.bankaccount.domain.account.IAccounts;
 import com.kata.bankaccount.domain.account.ReadAccount;
 import com.kata.bankaccount.domain.account.WriteAccount;
 import com.kata.bankaccount.infrastructure.repositories.account.entities.ReadAccountAdapter;
-import com.kata.bankaccount.infrastructure.repositories.account.entities.WriteAccountAdapter;
+import com.kata.bankaccount.infrastructure.repositories.account.entities.WriteAccountMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,7 @@ public class Accounts implements IAccounts {
 
     private final InMemoryAccountEntityRepository accountEntityRepository;
     private final ReadAccountAdapter readAccountAdapter;
-    private final WriteAccountAdapter writeAccountMapper;
+    private final WriteAccountMapper writeAccountMapper;
 
     @Override
     public String getNextId() {
@@ -44,7 +44,6 @@ public class Accounts implements IAccounts {
     @Override
     public void save(WriteAccount aggregate) {
         this.accountEntityRepository.save(this.writeAccountMapper.map(aggregate));
-        System.out.println(this.accountEntityRepository.getAll());
     }
 
     @Override

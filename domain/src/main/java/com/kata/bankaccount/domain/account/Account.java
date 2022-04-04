@@ -108,11 +108,15 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
 
         public Account build() {
-            if (this.id == null) throw new MissingPropertyException("Cannot create Account without an id");
-            if (this.balance == null)
+            if (this.id == null) {
+                throw new MissingPropertyException("Cannot create Account without an id");
+            }
+            if (this.balance == null) {
                 throw new MissingPropertyException("Cannot create Account without an initial Balance");
-            if (this.overdraft == null)
+            }
+            if (this.overdraft == null) {
                 throw new MissingPropertyException("Cannot create Account without an overdraft");
+            }
 
             var account = new Account(
                     id,
@@ -121,7 +125,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
                     limit,
                     new ArrayList<>());
 
-            account.events.add(new AccountCreated(id.value()));
+            account.events.add(new AccountCreated(id.value(), balance.value()));
 
             account.applyInvariants();
             return account;

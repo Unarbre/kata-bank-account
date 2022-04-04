@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class WriteAccountAdapter implements IMapper<AccountEntity, WriteAccount> {
+public class WriteAccountMapper implements IMapper<AccountEntity, WriteAccount> {
     @Override
     public AccountEntity map(WriteAccount source) {
         return new AccountEntity(source.accountId(), source.balance(), source.overdraft(), source.limit());
