@@ -147,4 +147,23 @@ public class AccountTest {
 
         assertEquals(new BigDecimal(900), account.getBalance().value());
     }
+
+    @Test
+    public void deposit_should_throw_error_on_limit_reached() {
+        var account = Account.createBuilder()
+                .id(AccountIdMocker.getValidId())
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(600))
+                .build();
+
+
+        BalanceOverLimitException exception = assertThrows(
+                BalanceOverLimitException.class, () ->
+                        account.deposit(new BigDecimal(400))
+        );
+
+        assertEquals("900 balance is over 600 account limit.", exception.getMessage());
+
+    }
 }

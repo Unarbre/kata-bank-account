@@ -78,6 +78,8 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
     public void deposit(BigDecimal depositValue) {
         this.balance = this.balance.add(depositValue);
+
+        this.applyInvariants();
     }
 
 
