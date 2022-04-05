@@ -132,4 +132,19 @@ public class AccountTest {
 
         assertEquals("-2100 balance is under 2000 overdraft limit.", exception.getMessage());
     }
+
+    @Test
+    public void deposit_should_enlarge_balance() {
+        var account = Account.createBuilder()
+                .id(AccountIdMocker.getValidId())
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
+                .build();
+
+
+        account.deposit(new BigDecimal(400));
+
+        assertEquals(new BigDecimal(900), account.getBalance().value());
+    }
 }
