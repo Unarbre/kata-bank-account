@@ -76,6 +76,10 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         return new AccountCreateBuilder();
     }
 
+    public void deposit(BigDecimal depositValue) {
+        this.balance = this.balance.add(depositValue);
+    }
+
 
     public static class AccountCreateBuilder {
         private Balance balance;
