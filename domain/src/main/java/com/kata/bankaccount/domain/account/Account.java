@@ -50,7 +50,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
 
     @Override
     public AccountId getId() {
-        return null;
+        return id;
     }
 
     public Balance getBalance() {

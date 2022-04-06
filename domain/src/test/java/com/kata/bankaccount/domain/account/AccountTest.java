@@ -1,5 +1,8 @@
 package com.kata.bankaccount.domain.account;
 
+import com.kata.bankaccount.common.events.AccountCreated;
+import com.kata.bankaccount.common.events.DepositeProceeded;
+import com.kata.bankaccount.common.events.WithdrawProceeded;
 import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
 import com.kata.bankaccount.domain.account.exceptions.BalanceUnderOverdraftException;
 import com.kata.bankaccount.domain.account.utils.AccountIdMocker;
@@ -8,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountTest {
 
@@ -26,6 +28,23 @@ public class AccountTest {
         assertEquals(account.getBalance(), new Balance(new BigDecimal(500)));
         assertEquals(account.getOverdraft(), new Overdraft(new BigDecimal(2000)));
         assertEquals(account.getLimit(), new Limit(new BigDecimal(150000)));
+    }
+
+    @Test
+    public void create_should_add_creation_event_in_list() {
+        var initalBalance = new BigDecimal(500);
+        var account = Account.createBuilder()
+                .id(AccountIdMocker.getValidId())
+                .initialBalance(initalBalance)
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
+                .build();
+
+        assertTrue(
+                account.getEvents().contains(
+                        new AccountCreated(account.getId().value(), initalBalance)
+                )
+        );
     }
 
     @Test
@@ -116,6 +135,24 @@ public class AccountTest {
     }
 
     @Test
+    public void withdraw_should_add_withdraw_event_in_account_events() {
+        var amount = new BigDecimal(400);
+        var account = Account.createBuilder()
+                .id(AccountIdMocker.getValidId())
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
+                .build();
+
+
+        account.withdraw(amount);
+
+        assertTrue(account.getEvents().contains(
+                new WithdrawProceeded(account.getId().value(), amount, account.getBalance().value())
+        ));
+    }
+
+    @Test
     public void withdraw_should_throw_an_error_on_overdraft_exceed() {
         var account = Account.createBuilder()
                 .id(AccountIdMocker.getValidId())
@@ -146,6 +183,25 @@ public class AccountTest {
         account.deposit(new BigDecimal(400));
 
         assertEquals(new BigDecimal(900), account.getBalance().value());
+    }
+
+    @Test
+    public void deposit_should_add_deposite_event() {
+        var amount = new BigDecimal(400);
+        var account = Account.createBuilder()
+                .id(AccountIdMocker.getValidId())
+                .initialBalance(new BigDecimal(500))
+                .initialOverdraft(new BigDecimal(2000))
+                .initialLimit(new BigDecimal(150000))
+                .build();
+
+
+        account.deposit(amount);
+
+        assertTrue(
+                account.getEvents().contains(
+                        new DepositeProceeded(account.getId().value(), amount, account.getBalance().value())
+                ));
     }
 
     @Test
