@@ -49,4 +49,12 @@ public class Histories implements IHistories {
     public void delete(String aggregateId) {
         this.repository.delete(aggregateId);
     }
+
+    @Override
+    public List<ReadHistory> findByAccountId(String accountId) {
+        return this.repository.getAll().stream()
+                .filter(historyEntity -> historyEntity.accountId().equals(accountId))
+                .map(readHistoryAdapter::adapt)
+                .collect(Collectors.toList());
+    }
 }
