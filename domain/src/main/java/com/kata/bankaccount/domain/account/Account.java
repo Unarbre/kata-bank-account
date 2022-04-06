@@ -1,6 +1,7 @@
 package com.kata.bankaccount.domain.account;
 
 import com.kata.bankaccount.common.events.AccountCreated;
+import com.kata.bankaccount.common.events.DepositeProceeded;
 import com.kata.bankaccount.common.events.WithdrawProceeded;
 import com.kata.bankaccount.common.structures.DomainEvent;
 import com.kata.bankaccount.domain.account.exceptions.BalanceOverLimitException;
@@ -80,6 +81,7 @@ public class Account implements IAggregate<AccountId, WriteAccount, ReadAccount>
         this.balance = this.balance.add(depositValue);
 
         this.applyInvariants();
+        this.events.add(new DepositeProceeded(this.id.value(), depositValue, this.getBalance().value()));
     }
 
 
