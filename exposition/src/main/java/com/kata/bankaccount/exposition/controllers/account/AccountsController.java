@@ -6,10 +6,12 @@ import com.kata.bankaccount.common.commands.DepositAccount;
 import com.kata.bankaccount.common.commands.WithdrawAccount;
 import com.kata.bankaccount.common.queries.GetAccount;
 import com.kata.bankaccount.common.queries.GetHistories;
+import com.kata.bankaccount.exposition.controllers.account.adapters.AccountAdapter;
 import com.kata.bankaccount.exposition.controllers.account.adapters.HistoryAdapter;
 import com.kata.bankaccount.exposition.controllers.account.dtos.ongoing.CreateAccountRequest;
 import com.kata.bankaccount.exposition.controllers.account.dtos.ongoing.DepositeRequest;
 import com.kata.bankaccount.exposition.controllers.account.dtos.ongoing.WithdrawRequest;
+import com.kata.bankaccount.exposition.controllers.account.dtos.outgoing.AccountDTO;
 import com.kata.bankaccount.exposition.controllers.account.dtos.outgoing.HistoryDTO;
 import io.jkratz.mediator.core.Mediator;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ public class AccountsController {
 
     private final Mediator mediator;
     private final HistoryAdapter historyAdapter;
+    private final AccountAdapter accountAdapter;
 
     @PostMapping()
     ResponseEntity<Void> create(@RequestBody CreateAccountRequest createAccountRequest) {
@@ -79,9 +82,9 @@ public class AccountsController {
 
 
     @GetMapping("/{accountId}")
-    String getByAccountId(@PathVariable String accountId) {
-        return this.mediator.dispatch(
-                new GetAccount(accountId)
+    ResponseEntity<AccountDTO> getByAccountId(@PathVariable String accountId) {
+        return ResponseEntity.of(
+                this.mediator.dispatch(new GetAccount(accountId)).map(accountAdapter::adapt)
         );
     }
 }
